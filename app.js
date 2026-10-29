@@ -1,0 +1,8 @@
+const $=s=>document.querySelector(s);
+const feedback=$('#actionFeedback');
+function finishOffer(message,label){feedback.hidden=false;feedback.textContent=message;$('#pendingCount').textContent='0 offers';const card=$('#offerCard');card.classList.add('offer-resolved');card.querySelector('.claim-state').textContent=label;card.querySelector('.offer-actions').hidden=true}
+$('#approveClaim').addEventListener('click',()=>finishOffer('Claim approved for issue #787 only. ChatGPT Triager may begin investigating and preparing a fix. Merge and publish remain blocked.','Approved'));
+$('#passClaim').addEventListener('click',()=>finishOffer('Offer declined. No work was started and the agent has not received permission to claim this issue.','Declined'));
+$('#askAgent').addEventListener('click',()=>$('#questionDialog').showModal());
+$('#sendQuestion').addEventListener('click',event=>{event.preventDefault();const question=$('#questionInput').value.trim();if(!question){$('#questionInput').focus();return}$('#questionDialog').close();feedback.hidden=false;feedback.textContent=`Question sent to ChatGPT Triager: “${question}” The agent’s reply will guide the work, but does not approve the claim.`});
+document.querySelectorAll('.row-more').forEach(button=>button.addEventListener('click',()=>{const row=button.closest('article');let note=row.querySelector('.expiry-note');if(note){note.remove();button.setAttribute('aria-expanded','false');return}note=document.createElement('small');note.className='expiry-note';note.textContent='The claim window ended before the agent began. This does not affect the agent’s role or permissions.';row.querySelector('div').append(note);button.setAttribute('aria-expanded','true')}));
